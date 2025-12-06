@@ -1,0 +1,1 @@
+javascript:(function(){const title = encodeURIComponent(document.title);const url = encodeURIComponent(document.location.href);window.open(`http://127.0.0.1:5173/bookmarks/new?title=${title}&url=${url}`);}())
