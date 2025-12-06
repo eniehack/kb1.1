@@ -56,7 +56,7 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			console.error(error.message);
 			return c.json({ bookmarks: [] });
 		}
-		return c.json({ bookmarks: data });
+		return c.json(data);
 	});
 
 export type Router = typeof router;

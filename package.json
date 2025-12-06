@@ -42,6 +42,7 @@
 		"@supabase/ssr": "^0.8.0",
 		"@supabase/supabase-js": "^2.84.0",
 		"@types/murmurhash-js": "^1.0.6",
+		"dayjs": "^1.11.19",
 		"formsnap": "^2.0.1",
 		"hono": "^4.10.6",
 		"murmurhash-js": "^1.0.0"
