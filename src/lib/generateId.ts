@@ -3,35 +3,6 @@ const BASE32_CHARS = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 const CODE_LENGTH = 6;
 const TYPE_CHAR = '2';
 
-// --- 外部 MurmurHash3 委譲関数 ---
-
-/**
- * 外部MurmurHash3ライブラリから32-bitハッシュ値を取得する関数。
- * (Goのmurmur3.StringSum32に相当)
- *
- * 【実装例 - imurmurhashを使用する場合】
- * 1. npm install imurmurhash
- * 2. import imurmurhash from 'imurmurhash';
- * 3. return imurmurhash(key).result();
- *
- * @param key ハッシュ入力文字列
- * @returns 32-bitの符号なし整数ハッシュ値
- */
-const getMurmur3Hash = (key: string): number => {
-	// 開発環境で動作確認を行う場合は、このプレースホルダーを実際のハッシュ計算に置き換えてください。
-	// 例として、特定の文字列に対する固定値を返します。（本番環境では必ず置き換えてください）
-	// Goの`murmur3.StringSum32("test string")`は `2999052285` (0xB275D5BD) です。
-	if (key === 'test string') {
-		return 2999052285;
-	}
-
-	// 外部ライブラリの利用が必須です。
-	console.error(
-		"ERROR: MurmurHash3 function is a placeholder. Please implement or import an external library (e.g., 'imurmurhash') to calculate the hash."
-	);
-	return 0;
-};
-
 // --- Luhn mod 32 チェックデジット計算 ---
 
 /**
@@ -39,7 +10,7 @@ const getMurmur3Hash = (key: string): number => {
  * @param input チェックデジット計算対象の文字列
  * @returns チェックデジット文字
  */
-function calculateLuhnCheckDigit(input: string): string {
+export function calculateLuhnCheckDigit(input: string): string {
 	// base32Charsから数値へのマッピング
 	const charToNum = new Map<string, number>();
 	for (let i = 0; i < BASE32_CHARS.length; i++) {
@@ -58,7 +29,6 @@ function calculateLuhnCheckDigit(input: string): string {
 
 		const digit = charToNum.get(char);
 		if (digit === undefined) {
-			// マッピングされていない文字はスキップまたはエラー処理
 			continue;
 		}
 
@@ -66,7 +36,7 @@ function calculateLuhnCheckDigit(input: string): string {
 
 		if (isEven) {
 			value *= 2;
-			if (value >= 32) {
+			if (32 <= value) {
 				// Goコードのロジック: value = (value / 32) + (value % 32)
 				value = Math.floor(value / 32) + (value % 32);
 			}
