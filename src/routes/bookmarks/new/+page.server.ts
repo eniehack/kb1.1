@@ -8,8 +8,8 @@ export const actions = {
 	default: async ({ request, fetch }) => {
 		const form = await superValidate(request, zod4(createBookmarkRequestParams));
 		if (!form.valid) {
-            return fail(400, { form });
-        }
+			return fail(400, { form });
+		}
 		const resp = await fetch(`/api/v1/bookmarks/new`, {
 			method: 'POST',
 			headers: {
@@ -18,8 +18,8 @@ export const actions = {
 			body: JSON.stringify(form.data)
 		});
 		if (!resp.ok) {
-            return error(500, 'cannot insert');
-        }
+			return error(500, 'cannot insert');
+		}
 		return redirect(307, '/bookmarks');
 	}
 } satisfies Actions;

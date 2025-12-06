@@ -14,12 +14,12 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			data: { user },
 			error: authError
 		} = await supabase.auth.getUser();
-        if (!user || authError) {
-		    console.debug('err', authError);
-		    console.debug(user);
-            c.status(401)
-            return
-        }
+		if (!user || authError) {
+			console.debug('err', authError);
+			console.debug(user);
+			c.status(401);
+			return;
+		}
 		const reqPayload = await c.req.json<CreateBookmarkRequestParams>();
 		const created_at = new Date().toISOString();
 		let id = '';
@@ -37,7 +37,7 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			url: reqPayload.url,
 			note: reqPayload.note,
 			is_public: reqPayload.is_public,
-			created_at: created_at,
+			created_at: created_at
 		});
 		if (error) {
 			console.debug(error);
