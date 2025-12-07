@@ -28,7 +28,11 @@ export const actions = {
 	}
 } satisfies Actions;
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals: {supabase} }) => {
+	const { data: {user}, error: authError } = await supabase.auth.getUser()
+	if (!user || authError) {
+		return redirect(307, `/auth/signin`)
+	}
 	const params = {
 		url: url.searchParams.get('url') ?? '',
 		title: url.searchParams.get('title') ?? ''
