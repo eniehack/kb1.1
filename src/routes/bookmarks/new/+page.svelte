@@ -36,17 +36,35 @@
 		<span class="text-red-600">{$errors.title}</span>
 	{/if}
 
-	<label for="note">note</label>
-	<input
-		type="text"
-		name="note"
-		bind:value={$form.note}
-		aria-invalid={$errors.note ? 'true' : undefined}
-		{...$constraints.note}
-	/>
-	{#if $errors.note}
-		<span class="text-red-600">{$errors.note}</span>
-	{/if}
+		<div>
+			<label for="tags">tag</label>
+			<input
+				type="text"
+				class="field"
+				name="tags"
+				bind:value={$form.tags}
+				placeholder="tag1 tag2 tag3"
+				aria-invalid={$errors.tags ? 'true' : undefined}
+				{...$constraints.tags}
+			/>
+			{#if $errors.tags}
+				<span class="text-red-600">{$errors.tags}</span>
+			{/if}
+		</div>
+
+		<div>
+			<label for="note">note</label>
+			<textarea
+				class="field"
+				name="note"
+				bind:value={$form.note}
+				aria-invalid={$errors.note ? 'true' : undefined}
+				{...$constraints.note}
+			></textarea>
+			{#if $errors.note}
+				<span class="text-red-600">{$errors.note}</span>
+			{/if}
+		</div>
 
 	<label for="is_public">public</label>
 	<input

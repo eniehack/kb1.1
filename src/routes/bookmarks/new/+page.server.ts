@@ -2,20 +2,24 @@ import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
-import { createBookmarkRequestParams, getCreateBookmarkPageUrlParams } from '$lib/database/schema';
+import { createBookmarkFormParams, getCreateBookmarkPageUrlParams } from '$lib/database/schema';
 
 export const actions = {
 	default: async ({ request, fetch }) => {
-		const form = await superValidate(request, zod4(createBookmarkRequestParams));
+		const form = await superValidate(request, zod4(createBookmarkFormParams));
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+		const data = {
+			...form.data,
+			tags: form.data.tags.split(/[, ]+/).filter(val => val.length !== 0)
 		}
 		const resp = await fetch(`/api/v1/bookmarks/new`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(form.data)
+			body: JSON.stringify(data)
 		});
 		if (!resp.ok) {
 			return error(500, 'cannot insert');

@@ -21,7 +21,6 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			return;
 		}
 		const reqPayload = await c.req.json<CreateBookmarkRequestParams>();
-		const created_at = new Date().toISOString();
 		let id = '';
 		for (let i = 0; i <= 32; i++) {
 			id = generateID(`bookmark ${reqPayload.url} ${Date.now()}`, i);
@@ -31,14 +30,14 @@ export const router = new Hono<{ Bindings: Bindings }>()
 				.eq('id', id);
 			if (count == 0) break;
 		}
-		const { error } = await supabase.from('bookmarks').insert<Bookmark>({
-			id,
-			title: reqPayload.title,
-			url: reqPayload.url,
-			note: reqPayload.note,
-			is_public: reqPayload.is_public,
-			created_at: created_at
-		});
+		const { error } = await supabase.rpc('create_bookmark_with_tags', {
+				bookmark_id: id,
+				title: reqPayload.title,
+				url: reqPayload.url,
+				note: reqPayload.note,
+				is_public: reqPayload.is_public,
+				tags: reqPayload.tags,
+			})
 		if (error) {
 			console.debug(error);
 			c.status(500);
@@ -50,13 +49,30 @@ export const router = new Hono<{ Bindings: Bindings }>()
 	})
 	.get('/bookmarks', async (c) => {
 		const supabase = c.env.supabase;
-		const { data, error } = await supabase.from('bookmarks').select<'bookmarks', Bookmark>();
+		const { data, error } = await supabase
+			.from('bookmarks')
+			.select(`
+				id,
+				title,
+				url,
+				note,
+				created_at,
+				is_public,
+				tags (
+					slug
+				)
+			`);
 
 		if (error) {
 			console.error(error.message);
-			return c.json({ bookmarks: [] });
+			return c.json([]);
 		}
-		return c.json(data);
+		const bookmarks = data.map(bookmark => ({
+		  	...bookmark,
+		  	tags: bookmark.tags.map(bt => bt.slug)
+		}));
+		console.debug(bookmarks);
+		return c.json(bookmarks);
 	});
 
 export type Router = typeof router;

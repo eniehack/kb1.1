@@ -22,7 +22,11 @@
 					{humanizedCreatedAt}
 				</time>
 			</div>
-			<div class="tags"></div>
+			<div class="tags">
+				{#each bookmark.tags as tag (tag)}
+					<a href={`/bookmarks/tags/${tag}`}>#{tag}</a>
+				{/each}
+			</div>
 			<div>
 				<button type="button"> remove </button>
 				<button type="button"> archive </button>
