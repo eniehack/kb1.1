@@ -4,6 +4,7 @@
 
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import Header from './Header.svelte';
 
 	let { data, children } = $props();
 	let { supabase, session } = $derived(data);
@@ -23,6 +24,5 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<main class="container m-auto">
-	{@render children()}
-</main>
+<Header />
+{@render children()}
