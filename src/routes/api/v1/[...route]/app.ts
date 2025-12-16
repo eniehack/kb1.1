@@ -31,15 +31,15 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			if (count == 0) break;
 		}
 		const { error } = await supabase.rpc('create_bookmark_with_tags', {
-				bookmark_id: id,
-				title: reqPayload.title,
-				url: reqPayload.url,
-				note: reqPayload.note,
-				is_public: reqPayload.is_public,
-				tags: reqPayload.tags,
-			})
+			bookmark_id: id,
+			title: reqPayload.title,
+			url: reqPayload.url,
+			note: reqPayload.note,
+			is_public: reqPayload.is_public,
+			tags: reqPayload.tags
+		});
 		if (error) {
-			console.debug(error);
+			console.debug('insert error:', error);
 			c.status(500);
 			return;
 		}
@@ -49,9 +49,7 @@ export const router = new Hono<{ Bindings: Bindings }>()
 	})
 	.get('/bookmarks', async (c) => {
 		const supabase = c.env.supabase;
-		const { data, error } = await supabase
-			.from('bookmarks')
-			.select(`
+		const { data, error } = await supabase.from('bookmarks').select(`
 				id,
 				title,
 				url,
@@ -64,12 +62,12 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			`);
 
 		if (error) {
-			console.error(error.message);
+			console.error('select error', error.code, error.message);
 			return c.json([]);
 		}
-		const bookmarks = data.map(bookmark => ({
-		  	...bookmark,
-		  	tags: bookmark.tags.map(bt => bt.slug)
+		const bookmarks = data.map((bookmark) => ({
+			...bookmark,
+			tags: bookmark.tags.map((bt) => bt.slug)
 		}));
 		console.debug(bookmarks);
 		return c.json(bookmarks);

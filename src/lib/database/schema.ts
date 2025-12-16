@@ -8,11 +8,11 @@ const bookmarkSchema = z.object({
 	is_public: z.boolean(),
 	created_at: z.string(),
 	user_id: z.string(),
-	tags: z.array(z.string()),
+	tags: z.array(z.string())
 });
 export type Bookmark = z.infer<typeof bookmarkSchema>;
 
-export const listBookmarkResponseSchema = z.array(z.omit(bookmarkSchema,{user_id: true}));
+export const listBookmarkResponseSchema = z.array(z.omit(bookmarkSchema, { user_id: true }));
 export type ListBookmarkResponse = z.infer<typeof bookmarkSchema>;
 
 export const createBookmarkRequestParams = z.object({

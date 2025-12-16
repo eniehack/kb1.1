@@ -13,7 +13,7 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-    nav a {
-        @apply text-cyan-600;
-    }
+	nav a {
+		@apply text-cyan-600;
+	}
 </style>

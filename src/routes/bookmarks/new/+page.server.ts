@@ -12,8 +12,8 @@ export const actions = {
 		}
 		const data = {
 			...form.data,
-			tags: form.data.tags.split(/[, ]+/).filter(val => val.length !== 0)
-		}
+			tags: form.data.tags.split(/[, ]+/).filter((val) => val.length !== 0)
+		};
 		const resp = await fetch(`/api/v1/bookmarks/new`, {
 			method: 'POST',
 			headers: {
@@ -28,10 +28,13 @@ export const actions = {
 	}
 } satisfies Actions;
 
-export const load: PageServerLoad = async ({ url, locals: {supabase} }) => {
-	const { data: {user}, error: authError } = await supabase.auth.getUser()
+export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
+	const {
+		data: { user },
+		error: authError
+	} = await supabase.auth.getUser();
 	if (!user || authError) {
-		return redirect(307, `/auth/signin`)
+		return redirect(307, `/auth/signin`);
 	}
 	const params = {
 		url: url.searchParams.get('url') ?? '',
