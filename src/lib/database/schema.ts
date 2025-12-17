@@ -20,7 +20,8 @@ export const createBookmarkRequestParams = z.object({
 	title: z.string(),
 	note: z._default(z.string(), ''),
 	tags: z._default(z.array(z.string()), []),
-	is_public: z._default(z.boolean(), false)
+	is_public: z._default(z.boolean(), false),
+	read_later: z._default(z.boolean(), false)
 });
 export type CreateBookmarkRequestParams = z.infer<typeof createBookmarkRequestParams>;
 

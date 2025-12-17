@@ -87,6 +87,20 @@
 			{/if}
 		</div>
 
+		<div>
+			<label for="read_later">後で読む</label>
+			<input
+				type="checkbox"
+				name="read_later"
+				aria-invalid={$errors.read_later ? 'true' : undefined}
+				{...$constraints.read_later}
+				bind:checked={$form.read_later}
+			/>
+			{#if $errors.read_later}
+				<span class="text-red-600">{$errors.read_later}</span>
+			{/if}
+		</div>
+
 		<button
 			class="inline-flex h-12 items-center justify-center rounded-md bg-neutral-950 px-6 font-medium text-neutral-50 transition active:scale-110"
 			type="submit">submit</button

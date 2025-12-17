@@ -36,7 +36,8 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			url: reqPayload.url,
 			note: reqPayload.note,
 			is_public: reqPayload.is_public,
-			tags: reqPayload.tags
+			tags: reqPayload.tags,
+			read_later: reqPayload.read_later,
 		});
 		if (error) {
 			console.debug('insert error:', error);
