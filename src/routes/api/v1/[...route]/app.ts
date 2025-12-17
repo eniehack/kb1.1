@@ -60,7 +60,8 @@ export const router = new Hono<{ Bindings: Bindings }>()
 				tags (
 					slug
 				)
-			`);
+			`)
+			.order('created_at', { ascending: false });
 
 		if (error) {
 			console.error('select error', error.code, error.message);
