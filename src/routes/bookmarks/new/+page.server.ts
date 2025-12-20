@@ -21,7 +21,9 @@ export const actions = {
 			},
 			body: JSON.stringify(data)
 		});
-		if (!resp.ok) {
+		if (resp.status === 401) {
+			return error(401, 'please sign in');
+		} else if (resp.status === 500) {
 			return error(500, 'cannot insert');
 		}
 		return redirect(307, '/bookmarks');

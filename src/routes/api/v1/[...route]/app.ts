@@ -38,7 +38,7 @@ export const router = new Hono<{ Bindings: Bindings }>()
 			note: reqPayload.note,
 			is_public: reqPayload.is_public,
 			tags: reqPayload.tags,
-			read_later: reqPayload.read_later,
+			read_later: reqPayload.read_later
 		});
 		if (error) {
 			console.debug('insert error:', error);
@@ -51,7 +51,10 @@ export const router = new Hono<{ Bindings: Bindings }>()
 	})
 	.get('/bookmarks', async (c) => {
 		const supabase = c.env.supabase;
-		const { data, error } = await supabase.from('bookmarks').select(`
+		const { data, error } = await supabase
+			.from('bookmarks')
+			.select(
+				`
 				id,
 				title,
 				url,
@@ -61,7 +64,8 @@ export const router = new Hono<{ Bindings: Bindings }>()
 				tags (
 					slug
 				)
-			`)
+			`
+			)
 			.order('created_at', { ascending: false });
 
 		if (error) {
