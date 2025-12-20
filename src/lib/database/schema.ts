@@ -1,19 +1,20 @@
 import { z } from 'zod/mini';
 
-const bookmarkSchema = z.object({
+export const bookmarkSchema = z.object({
 	id: z.string(),
 	title: z.string(),
 	url: z.string(),
 	note: z.string(),
 	is_public: z.boolean(),
 	created_at: z.string(),
-	user_id: z.string(),
 	tags: z.array(z.string())
 });
 export type Bookmark = z.infer<typeof bookmarkSchema>;
 
-export const listBookmarkResponseSchema = z.array(z.omit(bookmarkSchema, { user_id: true }));
-export type ListBookmarkResponse = z.infer<typeof bookmarkSchema>;
+export const flagSchema = z._default(z.coerce.boolean(), false);
+
+export const listBookmarkResponseSchema = z.array(bookmarkSchema);
+export type ListBookmarkResponse = z.infer<typeof listBookmarkResponseSchema>;
 
 export const createBookmarkRequestParams = z.object({
 	url: z.url(),

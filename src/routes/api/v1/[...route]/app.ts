@@ -1,7 +1,8 @@
 import { generateID } from '$lib/generateId';
 import { Hono } from 'hono';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Bookmark, CreateBookmarkRequestParams } from '$lib/database/schema';
+import { type CreateBookmarkRequestParams, flagSchema } from '$lib/database/schema';
+import * as z from 'zod';
 
 type Bindings = {
 	supabase: SupabaseClient;
@@ -73,6 +74,58 @@ export const router = new Hono<{ Bindings: Bindings }>()
 		}));
 		console.debug(bookmarks);
 		return c.json(bookmarks);
+	})
+	.get('/bookmarks/:bookmarkId', async (c) => {
+		const supabase = c.env.supabase;
+		const targetId = c.req.param('bookmarkId');
+		const { data, error } = await supabase
+			.from('bookmarks')
+			.select(
+				`
+				id,
+				title,
+				url,
+				note,
+				created_at,
+				is_public,
+				tags (
+					slug
+				)
+			`
+			)
+			.eq('id', targetId)
+			.limit(1)
+			.single();
+		if (error) {
+			console.error('select error', error.code, error.message);
+			c.status(500);
+			return;
+		}
+		if (data === null) {
+			c.status(404);
+			return;
+		}
+		const bookmarks = {
+			...data,
+			tags: data.tags.map((bt) => bt.slug)
+		};
+		return c.json(bookmarks);
+	})
+	.get('/bookmarks/feeling-lucky', async (c) => {
+		const supabase = c.env.supabase;
+		const onlyReadlater = z.safeParse(flagSchema, c.req.param('only_readlater'))
+		if (!onlyReadlater.success) {
+			console.error('rpc(im_feeling_lucky_on_bookmark) error', onlyReadlater.error);
+			c.status(400);
+			return
+		}
+		const { data, error } = await supabase.rpc('im_feeling_lucky_on_bookmark', {only_read_later: onlyReadlater});
+		if (error) {
+			console.error('rpc(im_feeling_lucky_on_bookmark) error', error.code, error.message);
+			c.status(500);
+			return;
+		}
+		return c.json(data);
 	});
 
 export type Router = typeof router;
